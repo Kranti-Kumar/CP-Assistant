@@ -18,21 +18,9 @@ public class UserStats {
     }
 
     public List<String> getWeakTopics() {
-        updateScores(); // Update scores before getting weak topics
-        if (topicScores.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        // Calculate average score
-        double avgScore = topicScores.values().stream()
-                .mapToInt(Integer::intValue)
-                .average()
-                .orElse(0.0);
-
-        // Get topics with scores below average
         return topicScores.entrySet().stream()
-                .filter(entry -> entry.getValue() < avgScore)
                 .sorted(Map.Entry.comparingByValue())
+                .limit(5) // Limit to 5 weakest topics
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
     }
