@@ -1,5 +1,6 @@
 com\cpassistant\logic\Recommender.class
 com\cpassistant\logic\UserStats.class
+com\cpassistant\model\User.class
 com\cpassistant\api\CodeforcesAPI.class
 com\cpassistant\logic\ProblemTracker.class
 com\cpassistant\model\Problem.class

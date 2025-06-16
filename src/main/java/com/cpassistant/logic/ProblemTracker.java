@@ -8,18 +8,44 @@ import java.time.format.DateTimeFormatter;
 
 public class ProblemTracker {
     private Map<String, List<Problem>> problemsByTopic;
-    private static final String DATA_FILE = "data/problems.txt";
+    private Set<String> existingProblems;
+    private static final String DATA_DIR = "data";
+    private static final String LOCAL_FILE = "local_problems.txt";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
+    private String currentUserFile;
 
     public ProblemTracker() {
         problemsByTopic = new HashMap<>();
+        existingProblems = new HashSet<>();
+        currentUserFile = LOCAL_FILE;
         loadProblems();
     }
 
+    public void setUser(String username) {
+        if (username != null && !username.isEmpty()) {
+            currentUserFile = username + "_problems.txt";
+            // Clear current data and load user's problems
+            problemsByTopic.clear();
+            existingProblems.clear();
+            loadProblems();
+        } else {
+            currentUserFile = LOCAL_FILE;
+            // Clear current data and load local problems
+            problemsByTopic.clear();
+            existingProblems.clear();
+            loadProblems();
+        }
+    }
+
     public void addProblem(Problem problem) {
-        problemsByTopic.computeIfAbsent(problem.getTopic(), k -> new ArrayList<>())
-                .add(problem);
-        saveProblems();
+        String problemId = problem.getName() + "|" + problem.getTopic() + "|" + problem.getPlatform();
+
+        if (!existingProblems.contains(problemId)) {
+            existingProblems.add(problemId);
+            problemsByTopic.computeIfAbsent(problem.getTopic(), k -> new ArrayList<>())
+                    .add(problem);
+            saveProblems();
+        }
     }
 
     public List<Problem> getProblemsByTopic(String topic) {
@@ -35,9 +61,13 @@ public class ProblemTracker {
     }
 
     private void loadProblems() {
-        File file = new File(DATA_FILE);
+        File dataDir = new File(DATA_DIR);
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
+
+        File file = new File(DATA_DIR, currentUserFile);
         if (!file.exists()) {
-            file.getParentFile().mkdirs();
             return;
         }
 
@@ -51,7 +81,12 @@ public class ProblemTracker {
                             parts[1],
                             parts[2],
                             LocalDate.parse(parts[3], DATE_FORMATTER));
-                    addProblem(problem);
+
+                    String problemId = problem.getName() + "|" + problem.getTopic() + "|" + problem.getPlatform();
+                    existingProblems.add(problemId);
+
+                    problemsByTopic.computeIfAbsent(problem.getTopic(), k -> new ArrayList<>())
+                            .add(problem);
                 }
             }
         } catch (IOException e) {
@@ -60,7 +95,13 @@ public class ProblemTracker {
     }
 
     private void saveProblems() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(DATA_FILE))) {
+        File dataDir = new File(DATA_DIR);
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
+
+        File file = new File(DATA_DIR, currentUserFile);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             for (List<Problem> problems : problemsByTopic.values()) {
                 for (Problem problem : problems) {
                     writer.write(String.format("%s,%s,%s,%s%n",
@@ -73,5 +114,9 @@ public class ProblemTracker {
         } catch (IOException e) {
             System.err.println("Error saving problems: " + e.getMessage());
         }
+    }
+
+    public String getCurrentUserFile() {
+        return currentUserFile;
     }
 }

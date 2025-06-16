@@ -1,8 +1,11 @@
-package src.main.java.com.cpassistant;
+package com.cpassistant;
 
-import src.main.java.com.cpassistant.logic.*;
-import src.main.java.com.cpassistant.model.Problem;
-import src.main.java.com.cpassistant.utils.CSVExporter;
+import com.cpassistant.api.CodeforcesAPI;
+import com.cpassistant.api.LeetCodeAPI;
+import com.cpassistant.logic.*;
+import com.cpassistant.model.Problem;
+import com.cpassistant.model.User;
+import com.cpassistant.utils.CSVExporter;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -38,6 +41,9 @@ public class Main {
                     exportProgress();
                     break;
                 case 6:
+                    fetchCodeforcesUser(scanner);
+                    break;
+                case 7:
                     System.out.println("Goodbye!");
                     return;
                 default:
@@ -60,7 +66,8 @@ public class Main {
         System.out.println("3. View Weak Topics");
         System.out.println("4. Get Today's Practice Recommendations");
         System.out.println("5. Export Progress as CSV");
-        System.out.println("6. Exit");
+        System.out.println("6. Fetch Codeforces User Info");
+        System.out.println("7. Exit");
     }
 
     private static void addSolvedProblem() {
@@ -129,6 +136,38 @@ public class Main {
         System.out.println("Progress exported successfully to " + filename);
     }
 
+    private static void fetchCodeforcesUser(Scanner scanner) {
+        System.out.print("Enter Codeforces handle: ");
+        String handle = scanner.nextLine().trim();
+
+        User user = CodeforcesAPI.getUserInfo(handle);
+        if (user != null) {
+            System.out.println("\nUser Information:");
+            System.out.println(user);
+
+            // Switch to user's problem file
+            problemTracker.setUser(handle);
+
+            List<Problem> solvedProblems = CodeforcesAPI.getUserSolvedProblems(handle);
+
+            if (!solvedProblems.isEmpty()) {
+                // Add problems to ProblemTracker
+                for (Problem problem : solvedProblems) {
+                    problemTracker.addProblem(problem);
+                }
+
+                // Show statistics
+                Map<String, Integer> topicStats = problemTracker.getTopicStats();
+                System.out.println("\nTopic-wise distribution:");
+                topicStats.forEach((topic, count) -> System.out.printf("%s: %d problems%n", topic, count));
+            } else {
+                System.out.println("No solved problems found.");
+            }
+        } else {
+            System.out.println("Failed to fetch user information. Please check the handle and try again.");
+        }
+    }
+
     private static String getStringInput(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine();
@@ -143,5 +182,32 @@ public class Main {
                 System.out.println("Please enter a valid number.");
             }
         }
+    }
+
+    private static void viewProblemHistory(ProblemTracker problemTracker) {
+        System.out.println("\nProblem History");
+        System.out.println("--------------");
+
+        // Show current file being viewed
+        System.out.println("Current file: " + problemTracker.getCurrentUserFile());
+
+        // Print topic-wise statistics
+        userStats.printTopicStats();
+
+        // Print all problems
+        System.out.println("\nAll Solved Problems:");
+        System.out.println("-------------------");
+        Map<String, List<Problem>> problemsByTopic = new HashMap<>();
+
+        // Group problems by topic
+        for (String topic : problemTracker.getTopicStats().keySet()) {
+            problemsByTopic.put(topic, problemTracker.getProblemsByTopic(topic));
+        }
+
+        // Print problems for each topic
+        problemsByTopic.forEach((topic, problems) -> {
+            System.out.println("\n" + topic + ":");
+            problems.forEach(problem -> System.out.println("  " + problem));
+        });
     }
 }

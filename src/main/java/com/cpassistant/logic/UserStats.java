@@ -18,25 +18,75 @@ public class UserStats {
     }
 
     public List<String> getWeakTopics() {
+        updateScores(); // Update scores before getting weak topics
+        if (topicScores.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // Calculate average score
+        double avgScore = topicScores.values().stream()
+                .mapToInt(Integer::intValue)
+                .average()
+                .orElse(0.0);
+
+        // Get topics with scores below average
         return topicScores.entrySet().stream()
+                .filter(entry -> entry.getValue() < avgScore)
                 .sorted(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
     }
 
     public int getTopicScore(String topic) {
+        updateScores(); // Update scores before getting topic score
         return topicScores.getOrDefault(topic, 0);
     }
 
     public Map<String, Integer> getAllTopicScores() {
+        updateScores(); // Update scores before getting all scores
         return new HashMap<>(topicScores);
     }
 
     public boolean isTopicWeak(String topic) {
-        int avgScore = (int) topicScores.values().stream()
+        updateScores(); // Update scores before checking if topic is weak
+        if (topicScores.isEmpty()) {
+            return false;
+        }
+
+        double avgScore = topicScores.values().stream()
                 .mapToInt(Integer::intValue)
                 .average()
-                .orElse(0);
+                .orElse(0.0);
         return getTopicScore(topic) < avgScore;
+    }
+
+    public void printTopicStats() {
+        updateScores();
+        if (topicScores.isEmpty()) {
+            System.out.println("No problems solved yet.");
+            return;
+        }
+
+        System.out.println("\nTopic-wise Statistics:");
+        System.out.println("---------------------");
+
+        // Calculate average
+        double avgScore = topicScores.values().stream()
+                .mapToInt(Integer::intValue)
+                .average()
+                .orElse(0.0);
+
+        // Sort topics by score
+        topicScores.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .forEach(entry -> {
+                    String status = entry.getValue() < avgScore ? " (Weak)" : " (Strong)";
+                    System.out.printf("%s: %d problems%s%n",
+                            entry.getKey(),
+                            entry.getValue(),
+                            status);
+                });
+
+        System.out.printf("%nAverage problems per topic: %.1f%n", avgScore);
     }
 }

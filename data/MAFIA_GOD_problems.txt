@@ -1,0 +1,61 @@
+CF 2114A,binary search,Codeforces,2025-05-26
+CF 2065C1,binary search,Codeforces,2025-02-09
+CF 2065C2,binary search,Codeforces,2025-02-09
+CF 2091D,binary search,Codeforces,2025-03-25
+CF 1848B,binary search,Codeforces,2025-03-14
+CF 2110A,implementation,Codeforces,2025-05-24
+CF 2090A,implementation,Codeforces,2025-03-23
+CF 2106B,constructive algorithms,Codeforces,2025-04-24
+CF 2118B,constructive algorithms,Codeforces,2025-06-12
+CF 2118A,constructive algorithms,Codeforces,2025-06-12
+CF 2113B,constructive algorithms,Codeforces,2025-06-15
+CF 2092C,constructive algorithms,Codeforces,2025-03-29
+CF 2085B,constructive algorithms,Codeforces,2025-03-22
+CF 2085A,constructive algorithms,Codeforces,2025-03-22
+CF 2110C,constructive algorithms,Codeforces,2025-05-24
+CF 2065E,constructive algorithms,Codeforces,2025-02-09
+CF 2111D,constructive algorithms,Codeforces,2025-06-03
+CF 2090D,constructive algorithms,Codeforces,2025-03-24
+CF 2117B,constructive algorithms,Codeforces,2025-06-08
+CF 2091C,constructive algorithms,Codeforces,2025-03-25
+CF 2114C,dp,Codeforces,2025-05-26
+CF 2091B,dp,Codeforces,2025-03-25
+CF 2106A,brute force,Codeforces,2025-04-24
+CF 2092B,brute force,Codeforces,2025-03-29
+CF 2103A,brute force,Codeforces,2025-04-21
+CF 2065A,brute force,Codeforces,2025-02-09
+CF 2116C,brute force,Codeforces,2025-05-31
+CF 2111C,brute force,Codeforces,2025-06-03
+CF 2111B,brute force,Codeforces,2025-06-04
+CF 2090B,brute force,Codeforces,2025-03-23
+CF 2070B,brute force,Codeforces,2025-02-27
+CF 2070A,brute force,Codeforces,2025-02-27
+CF 2091E,brute force,Codeforces,2025-03-25
+CF 2065B,strings,Codeforces,2025-02-09
+CF 2110B,strings,Codeforces,2025-05-24
+CF 2116A,games,Codeforces,2025-05-31
+CF 2106C,greedy,Codeforces,2025-04-24
+CF 1857C,greedy,Codeforces,2025-03-14
+CF 2113A,greedy,Codeforces,2025-06-15
+CF 2092A,greedy,Codeforces,2025-03-29
+CF 2072A,greedy,Codeforces,2025-02-25
+CF 2065D,greedy,Codeforces,2025-02-09
+CF 2114B,greedy,Codeforces,2025-05-26
+CF 2093B,greedy,Codeforces,2025-04-08
+CF 2116B,greedy,Codeforces,2025-05-31
+CF 2111A,greedy,Codeforces,2025-06-03
+CF 2103B,greedy,Codeforces,2025-04-21
+CF 2117A,greedy,Codeforces,2025-06-08
+CF 1832C,greedy,Codeforces,2025-03-14
+CF 2091A,greedy,Codeforces,2025-03-25
+CF 2117C,data structures,Codeforces,2025-06-08
+CF 2074B,geometry,Codeforces,2025-03-13
+CF 2074A,geometry,Codeforces,2025-03-13
+CF 1872D,math,Codeforces,2025-03-13
+CF 2093C,math,Codeforces,2025-04-08
+CF 2093A,math,Codeforces,2025-04-08
+CF 1808B,math,Codeforces,2025-03-27
+CF 2118C,bitmasks,Codeforces,2025-06-12
+CF 2085C,bitmasks,Codeforces,2025-03-23
+CF 2074C,bitmasks,Codeforces,2025-03-13
+CF 2072B,combinatorics,Codeforces,2025-02-26

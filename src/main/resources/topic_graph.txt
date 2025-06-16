@@ -5,11 +5,11 @@ Trees -> DFS
 Trees -> Dynamic Programming
 Backtracking -> Recursion
 Backtracking -> DFS
-Bit Manipulation -> Binary Numbers
-Bit Manipulation -> Bitwise Operations
 Dynamic Programming -> Recursion
 Dynamic Programming -> Memoization
 Dynamic Programming -> Tabulation
+Bit Manipulation -> Binary Numbers
+Bit Manipulation -> Bitwise Operations
 Graphs -> BFS
 Graphs -> DFS
 Graphs -> Union Find
@@ -21,13 +21,13 @@ Arrays -> Two Pointers
 Arrays -> Binary Search
 Arrays -> Sorting
 Arrays -> Dynamic Programming
-Trie -> String Manipulation
-Trie -> Prefix Search
 Greedy -> Sorting
 Greedy -> Priority Queue
+Trie -> String Manipulation
+Trie -> Prefix Search
 Heap -> Priority Queue
 Heap -> Sorting
-Segment Tree -> Range Queries
-Segment Tree -> Binary Search
 Linked List -> Two Pointers
 Linked List -> Fast and Slow Pointers
+Segment Tree -> Range Queries
+Segment Tree -> Binary Search
