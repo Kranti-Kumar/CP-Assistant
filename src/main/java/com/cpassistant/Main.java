@@ -8,6 +8,8 @@ import com.cpassistant.model.User;
 import com.cpassistant.utils.CSVExporter;
 import java.time.LocalDate;
 import java.util.*;
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class Main {
     private static ProblemTracker problemTracker;
@@ -44,7 +46,7 @@ public class Main {
                     fetchCodeforcesUser(scanner);
                     break;
                 case 7:
-                    fetchLeetCodeUser(scanner);
+                    fetchLeetCodeUser();
                     break;
                 case 8:
                     System.out.println("Goodbye!");
@@ -172,35 +174,93 @@ public class Main {
         }
     }
 
-    private static void fetchLeetCodeUser(Scanner scanner) {
+    private static void fetchLeetCodeUser() {
         System.out.print("Enter LeetCode username: ");
-        String username = scanner.nextLine().trim();
+        String username = scanner.nextLine();
 
-        User user = LeetCodeAPI.getUserInfo(username);
-        if (user != null) {
-            System.out.println("\nUser Information:");
-            System.out.println(user);
+        LeetCodeAPI leetCodeAPI = new LeetCodeAPI();
+        JSONObject userInfo = leetCodeAPI.getUserInfo(username);
 
-            // Switch to user's problem file
-            problemTracker.setUser("LC_" + username);
+        if (userInfo.has("data") && userInfo.getJSONObject("data").has("matchedUser")) {
+            JSONObject matchedUser = userInfo.getJSONObject("data").getJSONObject("matchedUser");
+            System.out.println("\nLeetCode User Information:");
+            System.out.println("Username: " + username);
 
-            List<Problem> solvedProblems = LeetCodeAPI.getUserSolvedProblems(username);
+            if (matchedUser.has("profile")) {
+                JSONObject profile = matchedUser.getJSONObject("profile");
+                if (profile.has("ranking")) {
+                    int ranking = profile.getInt("ranking");
+                    int reputation = profile.optInt("reputation", 0);
+                    int solutionCount = profile.optInt("solutionCount", 0);
 
+                    System.out.println("Ranking: " + ranking);
+                    if (reputation > 0) {
+                        System.out.println("Reputation: " + reputation);
+                    }
+                    if (solutionCount > 0) {
+                        System.out.println("Solutions: " + solutionCount);
+                    }
+                }
+            }
+
+            // Display contest badges if available
+            if (matchedUser.has("contestBadge") && !matchedUser.isNull("contestBadge")) {
+                JSONObject contestBadge = matchedUser.getJSONObject("contestBadge");
+                if (!contestBadge.isNull("name")) {
+                    System.out.println("\nContest Badge: " + contestBadge.getString("name"));
+                    if (contestBadge.has("hoverText")) {
+                        System.out.println("Achievement: " + contestBadge.getString("hoverText"));
+                    }
+                }
+            }
+
+            // Display other badges
+            if (matchedUser.has("badges") && !matchedUser.isNull("badges")) {
+                JSONArray badges = matchedUser.getJSONArray("badges");
+                if (badges.length() > 0) {
+                    System.out.println("\nBadges:");
+                    for (int i = 0; i < badges.length(); i++) {
+                        JSONObject badge = badges.getJSONObject(i);
+                        System.out.println("- " + badge.getString("displayName"));
+                    }
+                }
+            }
+
+            List<Problem> solvedProblems = leetCodeAPI.getUserSolvedProblems(username);
             if (!solvedProblems.isEmpty()) {
-                // Add problems to ProblemTracker
+                Map<String, Integer> topicCount = new HashMap<>();
+
+                for (Problem problem : solvedProblems) {
+                    topicCount.merge(problem.getTopic(), 1, Integer::sum);
+                }
+
+                System.out.println("\nTopic-wise Distribution:");
+                System.out.println("┌──────────────────────────────┬──────────┐");
+                System.out.println("│ Topic                        │ Problems │");
+                System.out.println("├──────────────────────────────┼──────────┤");
+
+                topicCount.entrySet().stream()
+                        .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                        .forEach(entry -> {
+                            String topic = entry.getKey();
+                            int count = entry.getValue();
+                            System.out.printf("│ %-28s │ %8d │%n", topic, count);
+                        });
+
+                System.out.println("└──────────────────────────────┴──────────┘");
+
+                // Store problems in a separate file
+                String filename = "LC_" + username + "_problems.txt";
+                problemTracker.setUser("LC_" + username);
                 for (Problem problem : solvedProblems) {
                     problemTracker.addProblem(problem);
                 }
-
-                // Show statistics
-                Map<String, Integer> topicStats = problemTracker.getTopicStats();
-                System.out.println("\nTopic-wise distribution:");
-                topicStats.forEach((topic, count) -> System.out.printf("%s: %d problems%n", topic, count));
+                System.out.println("\nProblems have been saved to " + filename);
             } else {
                 System.out.println("No solved problems found.");
             }
         } else {
-            System.out.println("Failed to fetch user information. Please check the username and try again.");
+            System.out.println("User not found or error fetching data.");
         }
     }
 

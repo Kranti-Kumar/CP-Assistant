@@ -15,9 +15,13 @@ public class ProblemTracker {
     private String currentUserFile;
 
     public ProblemTracker() {
+        this(LOCAL_FILE);
+    }
+
+    public ProblemTracker(String filename) {
         problemsByTopic = new HashMap<>();
         existingProblems = new HashSet<>();
-        currentUserFile = LOCAL_FILE;
+        currentUserFile = filename;
         loadProblems();
     }
 

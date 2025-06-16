@@ -10,11 +10,13 @@ public class Recommender {
     private ProblemTracker problemTracker;
     private TopicGraph topicGraph;
     private UserStats userStats;
+    private LeetCodeAPI leetCodeAPI;
 
     public Recommender(ProblemTracker problemTracker, TopicGraph topicGraph, UserStats userStats) {
         this.problemTracker = problemTracker;
         this.topicGraph = topicGraph;
         this.userStats = userStats;
+        this.leetCodeAPI = new LeetCodeAPI();
     }
 
     public List<String> getRecommendedTopics() {
@@ -53,7 +55,7 @@ public class Recommender {
         List<Problem> problems = new ArrayList<>();
 
         // Try to fetch from LeetCode first
-        problems.addAll(LeetCodeAPI.getProblemsByTag(topic, 1));
+        problems.addAll(leetCodeAPI.getProblemsByTag(topic, 1));
 
         // If we don't have enough problems, try Codeforces
         if (problems.size() < 2) {
