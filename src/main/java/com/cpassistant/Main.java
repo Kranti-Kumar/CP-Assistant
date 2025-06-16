@@ -44,6 +44,9 @@ public class Main {
                     fetchCodeforcesUser(scanner);
                     break;
                 case 7:
+                    fetchLeetCodeUser(scanner);
+                    break;
+                case 8:
                     System.out.println("Goodbye!");
                     return;
                 default:
@@ -67,7 +70,8 @@ public class Main {
         System.out.println("4. Get Today's Practice Recommendations");
         System.out.println("5. Export Progress as CSV");
         System.out.println("6. Fetch Codeforces User Info");
-        System.out.println("7. Exit");
+        System.out.println("7. Fetch LeetCode User Info");
+        System.out.println("8. Exit");
     }
 
     private static void addSolvedProblem() {
@@ -165,6 +169,38 @@ public class Main {
             }
         } else {
             System.out.println("Failed to fetch user information. Please check the handle and try again.");
+        }
+    }
+
+    private static void fetchLeetCodeUser(Scanner scanner) {
+        System.out.print("Enter LeetCode username: ");
+        String username = scanner.nextLine().trim();
+
+        User user = LeetCodeAPI.getUserInfo(username);
+        if (user != null) {
+            System.out.println("\nUser Information:");
+            System.out.println(user);
+
+            // Switch to user's problem file
+            problemTracker.setUser("LC_" + username);
+
+            List<Problem> solvedProblems = LeetCodeAPI.getUserSolvedProblems(username);
+
+            if (!solvedProblems.isEmpty()) {
+                // Add problems to ProblemTracker
+                for (Problem problem : solvedProblems) {
+                    problemTracker.addProblem(problem);
+                }
+
+                // Show statistics
+                Map<String, Integer> topicStats = problemTracker.getTopicStats();
+                System.out.println("\nTopic-wise distribution:");
+                topicStats.forEach((topic, count) -> System.out.printf("%s: %d problems%n", topic, count));
+            } else {
+                System.out.println("No solved problems found.");
+            }
+        } else {
+            System.out.println("Failed to fetch user information. Please check the username and try again.");
         }
     }
 
